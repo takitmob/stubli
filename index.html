@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcours annuel — Croissance chrétienne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark">✝</span>
+        <div class="brand-text">
+          <h1>Parcours annuel</h1>
+          <p>Croissance chrétienne — 52 semaines</p>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab-btn active" data-view="dashboard" role="tab" aria-selected="true">Tableau de bord</button>
+        <button class="tab-btn" data-view="parcours" role="tab" aria-selected="false">Le sentier</button>
+        <button class="tab-btn" data-view="settings" role="tab" aria-selected="false">Synchronisation</button>
+      </nav>
+    </div>
+    <div class="sync-status" id="syncStatus">
+      <span class="sync-dot" id="syncDot"></span>
+      <span id="syncLabel">Non synchronisé</span>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="view active">
+      <div class="stat-grid" id="statGrid"></div>
+
+      <div class="panel">
+        <h2>Bilan mensuel</h2>
+        <div class="month-bars" id="monthBars"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Moyennes par dimension</h2>
+        <div class="avg-bars" id="avgBars"></div>
+      </div>
+    </section>
+
+    <!-- PARCOURS / SENTIER -->
+    <section id="view-parcours" class="view">
+      <div class="filter-row">
+        <input type="search" id="searchInput" placeholder="Rechercher un thème, un passage…">
+        <select id="filterStatus">
+          <option value="all">Toutes les semaines</option>
+          <option value="todo">À faire</option>
+          <option value="progress">En cours</option>
+          <option value="done">Terminées</option>
+        </select>
+      </div>
+      <div id="pathContainer"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="view-settings" class="view">
+      <div class="panel narrow">
+        <h2>Synchronisation via GitHub</h2>
+        <p class="help-text">
+          Tes données sont sauvegardées automatiquement dans ton navigateur (hors-ligne).
+          Pour les retrouver sur tous tes appareils, connecte un dépôt GitHub : l'app y écrit
+          un fichier <code>progress.json</code> à chaque sauvegarde, via l'API GitHub — directement
+          depuis ton navigateur, sans aucun serveur tiers.
+        </p>
+
+        <div class="field">
+          <label for="ghOwner">Propriétaire du dépôt</label>
+          <input type="text" id="ghOwner" placeholder="ex. takit">
+        </div>
+        <div class="field">
+          <label for="ghRepo">Nom du dépôt</label>
+          <input type="text" id="ghRepo" placeholder="ex. parcours-croissance-chretienne">
+        </div>
+        <div class="field">
+          <label for="ghBranch">Branche</label>
+          <input type="text" id="ghBranch" placeholder="main" value="main">
+        </div>
+        <div class="field">
+          <label for="ghPath">Chemin du fichier de données</label>
+          <input type="text" id="ghPath" placeholder="data/progress.json" value="data/progress.json">
+        </div>
+        <div class="field">
+          <label for="ghToken">Token d'accès personnel GitHub (PAT)</label>
+          <input type="password" id="ghToken" placeholder="ghp_… ou github_pat_…">
+          <p class="field-hint">
+            Crée un <em>fine-grained token</em> limité à ce seul dépôt, permission
+            "Contents: Read and write". Le token reste uniquement dans ton navigateur
+            (localStorage) et n'est envoyé qu'à api.github.com.
+            <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Créer un token →</a>
+          </p>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn primary" id="btnConnect">Enregistrer & charger depuis GitHub</button>
+          <button class="btn" id="btnPush">Sauvegarder maintenant sur GitHub</button>
+          <button class="btn ghost" id="btnDisconnect">Déconnecter</button>
+        </div>
+
+        <label class="toggle-row">
+          <input type="checkbox" id="autoSyncToggle">
+          Synchroniser automatiquement après chaque modification
+        </label>
+
+        <p class="sync-message" id="settingsMessage"></p>
+      </div>
+
+      <div class="panel narrow">
+        <h2>Sauvegarde locale</h2>
+        <p class="help-text">Sans GitHub, tes données restent sur cet appareil. Tu peux toujours exporter / importer un fichier de secours.</p>
+        <div class="btn-row">
+          <button class="btn" id="btnExport">Exporter (.json)</button>
+          <button class="btn" id="btnImportTrigger">Importer un fichier</button>
+          <input type="file" id="btnImport" accept="application/json" hidden>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- WEEK DETAIL MODAL -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose" aria-label="Fermer">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
